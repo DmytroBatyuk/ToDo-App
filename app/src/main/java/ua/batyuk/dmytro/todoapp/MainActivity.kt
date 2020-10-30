@@ -29,6 +29,9 @@ class MainActivity : AppCompatActivity() {
         val binding: ActivityMainBinding =
             DataBindingUtil.setContentView(this, R.layout.activity_main)
 
+        setSupportActionBar(binding.toolbar)
+        binding.toolbar.setTitleTextColor(ContextCompat.getColorStateList(this, android.R.color.white)!!)
+
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
