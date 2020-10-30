@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
 import ua.batyuk.dmytro.todoapp.common.GenericAdapter
@@ -15,7 +16,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        val binding: ActivityMainBinding =
+            DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
@@ -25,6 +27,10 @@ class MainActivity : AppCompatActivity() {
                 ItemBinding.inflate(inflater, viewGroup, false)
             },
             binder = { binding: ItemBinding, item: Task, position ->
+                binding.rootLayout.backgroundTintList = ContextCompat.getColorStateList(
+                    this,
+                    if (item.completed) R.color.color_completed_task_background else R.color.color_uncompleted_task_background
+                )
                 binding.title.text = item.title
                 binding.checkbox.setOnCheckedChangeListener(null)
                 binding.checkbox.isChecked = item.completed

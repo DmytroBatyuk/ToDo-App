@@ -3,4 +3,7 @@
     <color name="colorPrimary">#4154AF</color>
     <color name="colorPrimaryDark">#314299</color>
     <color name="colorAccent">#EC5281</color>
+
+    <color name="color_completed_task_background">#D3F4D3</color>
+    <color name="color_uncompleted_task_background">#FFFFFF</color>
 </resources>
