@@ -38,6 +38,11 @@ class MainActivityViewModel(app: Application) : AndroidViewModel(app) {
         data.value = newList
     }
 
+    fun onCompletedChanged(position: Int, isCompleted: Boolean) {
+        data.value!![position].completed = isCompleted
+        data.postValue(data.value)
+    }
+
     override fun onCleared() {
         super.onCleared()
         queue.cancelAll(REQ_TAG)
@@ -65,5 +70,5 @@ class MainActivityViewModel(app: Application) : AndroidViewModel(app) {
 data class Task(
     val id: Long,
     val title: String,
-    val completed: Boolean
+    var completed: Boolean
 )
