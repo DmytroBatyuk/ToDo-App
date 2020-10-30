@@ -29,6 +29,7 @@
             android:layout_height="wrap_content"
             android:text="add"
             android:enabled="@{viewModel.taskCanBeAdded}"
+            android:onClick="@{(v) -> viewModel.onAddClicked()}"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
