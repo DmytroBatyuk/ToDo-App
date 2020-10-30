@@ -2,17 +2,26 @@ package ua.batyuk.dmytro.todoapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
+import atownsend.swipeopenhelper.SwipeOpenItemTouchHelper
 import ua.batyuk.dmytro.todoapp.common.GenericAdapter
 import ua.batyuk.dmytro.todoapp.databinding.ActivityMainBinding
 import ua.batyuk.dmytro.todoapp.databinding.ItemBinding
 
 class MainActivity : AppCompatActivity() {
-    val viewModel: MainActivityViewModel by viewModels()
+    private val viewModel: MainActivityViewModel by viewModels()
+
+    private val helper = SwipeOpenItemTouchHelper(
+        SwipeOpenItemTouchHelper.SimpleCallback(
+            SwipeOpenItemTouchHelper.START
+        )
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,10 +46,22 @@ class MainActivity : AppCompatActivity() {
                 binding.checkbox.setOnCheckedChangeListener { _, isCompleted ->
                     viewModel.onCompletedChanged(position, isCompleted)
                 }
-            }
-        )
+                binding.deleteTextView.setOnClickListener {
+                    viewModel.onDeleteTask(position)
+                }
+            },
+            getSwipeView = { binding ->
+                binding.rootLayout
+            },
+            getEndHiddenViewSize = { binding ->
+                binding.deleteTextView.measuredWidth.toFloat()
+            })
 
         binding.recyclerView.adapter = adapter
+
+        helper.setCloseOnAction(true)
+        helper.attachToRecyclerView(binding.recyclerView)
+
 
         viewModel.data.observe(this, {
             adapter.updateList(it.toList())

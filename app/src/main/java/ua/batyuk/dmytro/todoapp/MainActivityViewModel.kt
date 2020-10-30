@@ -10,6 +10,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.util.*
 
 private const val REQ_TAG = "myTag"
 
@@ -33,7 +34,8 @@ class MainActivityViewModel(app: Application) : AndroidViewModel(app) {
 
 
     fun onAddClicked() {
-        val newList = arrayOf(Task(0, taskTitle.value!!, false), *(data.value ?: emptyArray()))
+        val newTask = Task(Random().nextLong(), taskTitle.value!!, false)
+        val newList = arrayOf(newTask, *(data.value ?: emptyArray()))
         taskTitle.value = ""
         data.value = newList
     }
@@ -41,6 +43,11 @@ class MainActivityViewModel(app: Application) : AndroidViewModel(app) {
     fun onCompletedChanged(position: Int, isCompleted: Boolean) {
         data.value!![position].completed = isCompleted
         data.postValue(data.value)
+    }
+
+    fun onDeleteTask(position: Int) {
+        val newData = remove(data.value!!, position)
+        data.postValue(newData)
     }
 
     override fun onCleared() {
@@ -63,6 +70,17 @@ class MainActivityViewModel(app: Application) : AndroidViewModel(app) {
             }
 
         queue.add(request)
+    }
+
+    private fun remove(arr: Array<Task>, index: Int): Array<Task> {
+        if (index < 0 || index >= arr.size) {
+            return arr
+        }
+
+        val result = Array(arr.size - 1) { Task(0, "", false) }
+        System.arraycopy(arr, 0, result, 0, index)
+        System.arraycopy(arr, index + 1, result, index, arr.size - index - 1)
+        return result
     }
 }
 
