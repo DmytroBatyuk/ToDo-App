@@ -50,6 +50,11 @@ class MainActivityViewModel(app: Application) : AndroidViewModel(app) {
         data.postValue(newData)
     }
 
+    fun showInSingleLineChanged(position: Int) {
+        data.value!![position].showInSingleLine = data.value!![position].showInSingleLine.not()
+        data.postValue(data.value)
+    }
+
     override fun onCleared() {
         super.onCleared()
         queue.cancelAll(REQ_TAG)
@@ -58,9 +63,9 @@ class MainActivityViewModel(app: Application) : AndroidViewModel(app) {
     private fun loadData() {
         val url = "http://jsonplaceholder.typicode.com/todos?userId=1"
         val request = StringRequest(Request.Method.GET, url, { response ->
-            val arrayType = object : TypeToken<Array<Task>>() {}.type
-            val array: Array<Task> = Gson().fromJson(response, arrayType)
-            data.postValue(array)
+            val arrayType = object : TypeToken<Array<TaskDTO>>() {}.type
+            val array: Array<TaskDTO> = Gson().fromJson(response, arrayType)
+            data.postValue(array.map { Task.from(it) }.toTypedArray())
         }, { err ->
             //For testing app is OK
             Toast.makeText(getApplication(), "Failed: $err", Toast.LENGTH_LONG).show()
@@ -85,8 +90,24 @@ class MainActivityViewModel(app: Application) : AndroidViewModel(app) {
 }
 
 
-data class Task(
+data class TaskDTO(
     val id: Long,
     val title: String,
     var completed: Boolean
 )
+
+data class Task(
+    val id: Long,
+    val title: String,
+    var completed: Boolean,
+    var showInSingleLine: Boolean = true
+) {
+    companion object {
+        fun from(dto: TaskDTO): Task =
+            Task(
+                dto.id,
+                dto.title,
+                dto.completed
+            )
+    }
+}

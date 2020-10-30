@@ -1,5 +1,6 @@
 package ua.batyuk.dmytro.todoapp
 
+import android.graphics.Paint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -41,6 +42,22 @@ class MainActivity : AppCompatActivity() {
                     if (item.completed) R.color.color_completed_task_background else R.color.color_uncompleted_task_background
                 )
                 binding.title.text = item.title
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                    binding.title.isSingleLine = item.showInSingleLine
+                } else {
+                    //TODO: check how it works on versions before Q
+                    binding.title.maxLines = if (item.showInSingleLine) 1 else -1
+                }
+                binding.title.setTextColor(ContextCompat.getColorStateList(
+                    this,
+                    if (item.completed) android.R.color.darker_gray else android.R.color.black
+                ))
+                binding.title.paintFlags = if (item.completed) {
+                    binding.title.paintFlags.or(Paint.STRIKE_THRU_TEXT_FLAG)
+                } else {
+                    binding.title.paintFlags.and(Paint.STRIKE_THRU_TEXT_FLAG.inv())
+                }
+
                 binding.checkbox.setOnCheckedChangeListener(null)
                 binding.checkbox.isChecked = item.completed
                 binding.checkbox.setOnCheckedChangeListener { _, isCompleted ->
@@ -48,6 +65,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 binding.deleteTextView.setOnClickListener {
                     viewModel.onDeleteTask(position)
+                }
+
+                binding.expandCollapseTitleClickView.setOnClickListener {
+                    viewModel.showInSingleLineChanged(position)
                 }
             },
             getSwipeView = { binding ->
