@@ -2,6 +2,7 @@
 <layout>
 
     <data>
+
         <variable
             name="viewModel"
             type="ua.batyuk.dmytro.todoapp.MainActivityViewModel" />
@@ -17,8 +18,9 @@
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/input_edit_text"
             android:layout_width="0dp"
-            android:text="@={viewModel.taskTitle}"
             android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="@={viewModel.taskTitle}"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/add_button"
             app:layout_constraintTop_toTopOf="parent" />
@@ -27,9 +29,9 @@
             android:id="@+id/add_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="add"
             android:enabled="@{viewModel.taskCanBeAdded}"
             android:onClick="@{(v) -> viewModel.onAddClicked()}"
+            android:text="add"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
